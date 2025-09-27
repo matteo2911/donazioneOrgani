@@ -243,13 +243,16 @@ function createGanttContext(startTime) {
   const chartHeight  = 1490;
   const offsetX      = 220;
 
+  //aggiungo padding
+  const topPad=50;
+
   const container = document.getElementById('container');
   if (container) container.innerHTML = "";
 
   const svg = d3.select('#container')
     .append('svg')
     .attr('width', svgWidth + offsetX)
-    .attr('height', chartHeight + 1300)
+    .attr('height', chartHeight + 1300+ topPad)
     .style('overflow','visible');
 
   const tooltip = d3.select('#tooltip');
@@ -272,17 +275,17 @@ function createGanttContext(startTime) {
   return {
     startTime, endTime, totalMinutes, svgWidth, chartHeight, offsetX,
     taskHeight, taskPadding, minuteWidth,
-    svg, x, tooltip,
+    svg, x, tooltip,topPad,
     formatDay: localeIt.format('%B %d')
   };
 }
 
 function drawLegend(ctx) {
-  const legendGroup = ctx.svg.append('g').attr('transform', 'translate(20, 20)');
+  const legendGroup = ctx.svg.append('g').attr('transform', 'translate(20, 50)');
   legendGroup.append('rect').attr('x',0).attr('y',-22).attr('width',300).attr('height',185).attr('rx',10).attr('fill','white');
 
   const items = [
-    { color:'rgba(75, 73, 227, 1)', label:'Non iniziato' },
+    { color:'rgb(1, 1, 2)', label:'Non iniziato' },
     { color:'rgb(233, 238, 160)',  label:'Richiesto' },
     { color:'rgb(255, 197, 72)',   label:'Iniziato' },
     { color:'rgb(160, 248, 175)',  label:'Terminato o non Richiesto' },
@@ -307,56 +310,63 @@ function drawBackgroundBandsAndDayLabels(ctx) {
   const dayStart = new Date(ctx.startTime);
   const dayEnd = new Date(dayStart); dayEnd.setHours(24,0,0,0);
 
-  ctx.svg.append('rect').attr('x',ctx.x(dayStart)+ctx.offsetX).attr('y',10)
+  const y0= ctx.topPad +10; 
+
+  ctx.svg.append('rect').attr('x',ctx.x(dayStart)+ctx.offsetX).attr('y',y0)
     .attr('width', ctx.x(dayEnd)-ctx.x(dayStart)).attr('height',rectHeight).attr('fill','#c89bffff').lower();
-  ctx.svg.append('rect').attr('x',ctx.x(dayEnd)+ctx.offsetX).attr('y',10)
+  ctx.svg.append('rect').attr('x',ctx.x(dayEnd)+ctx.offsetX).attr('y',y0)
     .attr('width', ctx.x(ctx.endTime)-ctx.x(dayEnd)).attr('height',rectHeight).attr('fill','#c89bffff').lower();
-  ctx.svg.append('line').attr('x1',ctx.x(dayEnd)+ctx.offsetX).attr('y1',10).attr('x2',ctx.x(dayEnd)+ctx.offsetX).attr('y2',10+rectHeight)
+  ctx.svg.append('line').attr('x1',ctx.x(dayEnd)+ctx.offsetX).attr('y1',y0).attr('x2',ctx.x(dayEnd)+ctx.offsetX).attr('y2',10+rectHeight)
     .attr('stroke','#fff').attr('stroke-width',2);
 
   ctx.svg.append('text')
     .attr('x', ((ctx.x(dayStart)+ctx.offsetX)+(ctx.x(dayEnd)+ctx.offsetX))/2)
-    .attr('y',60).attr('text-anchor','middle').attr('fill','#fff').attr('font-weight','bold').attr('font-size','30px')
+    .attr('y',y0+50).attr('text-anchor','middle').attr('fill','#fff').attr('font-weight','bold').attr('font-size','30px')
     .text(ctx.formatDay(dayStart));
 
   ctx.svg.append('text')
     .attr('x', ((ctx.x(dayEnd)+ctx.offsetX)+(ctx.x(ctx.endTime)+ctx.offsetX))/2)
-    .attr('y',60).attr('text-anchor','middle').attr('fill','#fff').attr('font-weight','bold').attr('font-size','30px')
+    .attr('y',y0+50).attr('text-anchor','middle').attr('fill','#fff').attr('font-weight','bold').attr('font-size','30px')
     .text(ctx.formatDay(dayEnd));
 }
 
 function drawTimeGrid(ctx) {
   const rectHeight = 90;
+
+  const yBase=ctx.topPad + rectHeight +30; 
+
   for (let i=0; i<=ctx.totalMinutes; i++) {
     const time = new Date(ctx.startTime.getTime() + i*60000);
     const xPos = ctx.x(time)+ctx.offsetX;
+
     ctx.svg.append('line')
-      .attr('x1',xPos).attr('y1',rectHeight+30)
-      .attr('x2',xPos).attr('y2',rectHeight+52)
+      .attr('x1',xPos).attr('y1',yBase)
+      .attr('x2',xPos).attr('y2',yBase+22)
       .attr('stroke','rgb(255, 255, 255)')
       .attr('stroke-width', i%60===0 ? 5.5 : 0.8);
     if (i%60===0) {
-      ctx.svg.append('text').attr('x',xPos+5).attr('y',rectHeight+24).text(d3.timeFormat('%H:%M')(time)).attr('font-size','15px');
+      ctx.svg.append('text').attr('x',xPos+5).attr('y',yBase-6).text(d3.timeFormat('%H:%M')(time)).attr('font-size','15px');
     }
   }
 }
 
 function draw18hMarker(ctx) {
-  const rectTop = 110;
+  const rectTop = ctx.topPad + 110;
   const t = new Date(ctx.startTime.getTime() + 18*60*60*1000);
   const x18 = ctx.x(t) + ctx.offsetX;
-  ctx.svg.append('line').attr('x1',x18).attr('y1',rectTop).attr('x2',x18).attr('y2',ctx.chartHeight+1300).attr('stroke','black').attr('stroke-width',2);
-  ctx.svg.append('text').attr('x',x18+5).attr('y',ctx.chartHeight+1260).attr('fill','black').attr('font-size','20px')
+  ctx.svg.append('line').attr('x1',x18).attr('y1',rectTop).attr('x2',x18).attr('y2',ctx.chartHeight+1300+ ctx.topPad).attr('stroke','black').attr('stroke-width',2);
+  ctx.svg.append('text').attr('x',x18+5).attr('y',ctx.chartHeight+1260+ctx.topPad).attr('fill','black').attr('font-size','20px')
     .text('18h - COMPLETAMENTO IDEALE DI TUTTE LE ATTIVITÀ ');
-  ctx.svg.append('text').attr('x',x18+5).attr('y',180).attr('fill','black').attr('font-size','20px')
+  ctx.svg.append('text').attr('x',x18+5).attr('y',rectTop -  -50).attr('fill','black').attr('font-size','20px')
     .text('18h - COMPLETAMENTO IDEALE DI TUTTE LE ATTIVITÀ ');
 }
 
 function drawCurrentTimeTicker(ctx) {
-  const rectTop = 110;
-  const line = ctx.svg.append('line').attr('y1',rectTop).attr('y2',ctx.chartHeight+1300).attr('stroke','red').attr('stroke-width',2);
-  const textBottom = ctx.svg.append('text').attr('y',ctx.chartHeight+1280).attr('fill','red').attr('font-size','20px');
-  const textTop    = ctx.svg.append('text').attr('y',160).attr('fill','red').attr('font-size','20px');
+  const rectTop = ctx.topPad + 110;
+
+  const line = ctx.svg.append('line').attr('y1',rectTop).attr('y2',ctx.chartHeight+1300+ctx.topPad).attr('stroke','red').attr('stroke-width',2);
+  const textBottom = ctx.svg.append('text').attr('y',ctx.chartHeight+1280+ctx.topPad).attr('fill','red').attr('font-size','20px');
+  const textTop    = ctx.svg.append('text').attr('y',ctx.topPad + 160).attr('fill','red').attr('font-size','20px');
 
   function update() {
     const now = new Date();
@@ -466,7 +476,7 @@ function drawTasks(ctx, data) {
     const g = d3.select(this);
 
     const barX = ctx.x(d.start) + ctx.offsetX;
-    const barY = d.y + 30;
+    const barY = ctx.topPad+ d.y + 30;
     const barW = Math.max(1, ctx.x(d.end) - ctx.x(d.start));
     const barH = ctx.taskHeight;
 
@@ -513,7 +523,7 @@ function drawTasks(ctx, data) {
     // ▶ Freccia avanti
     const forwardArrow = g.append('text')
       .attr('x', ctx.x(d.end) + ctx.offsetX + 15)
-      .attr('y', d.y + ctx.taskHeight / 2 + 40)
+      .attr('y', ctx.topPad + d.y + ctx.taskHeight / 2 + 40)
       .text('\u25B6')
       .attr('font-size', '27px')
       .attr('fill', d.status === 'terminato' ? 'gray' : '#000')
@@ -562,7 +572,7 @@ function drawTasks(ctx, data) {
     // ◀ Freccia indietro
     g.append('text')
       .attr('x', ctx.x(d.start) + ctx.offsetX - 40)
-      .attr('y', d.y + ctx.taskHeight / 2 + 40)
+      .attr('y', ctx.topPad + d.y + ctx.taskHeight / 2 + 40)
       .text('\u25C0')
       .attr('font-size', '27px')
       .style('cursor', 'pointer')
@@ -599,7 +609,7 @@ function drawTasks(ctx, data) {
   const maxY = d3.max(data, d => d.y + ctx.taskHeight/2 + 50);
   ctx.svg.append('rect')
     .attr('class', 'label-background')
-    .attr('x', 0).attr('y', minY - 20)
+    .attr('x', 0).attr('y', ctx.topPad + minY - 20)
     .attr('width', 330).attr('height', maxY - minY + 320)
     .attr('fill', 'white').attr('rx', 10).attr('opacity', 0.8);
 
@@ -609,7 +619,7 @@ function drawTasks(ctx, data) {
     .append('text')
     .classed('label', true)
     .attr('x', 10)
-    .attr('y', d => d.y + ctx.taskHeight / 2 + 30)
+    .attr('y', d => ctx.topPad + d.y + ctx.taskHeight / 2 + 30)
     .attr('font-weight', 'bold')
     .attr('font-size', '18px')
     .text(d => d.name);
