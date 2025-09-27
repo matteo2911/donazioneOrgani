@@ -1,0 +1,59 @@
+{
+  "name": "mia-electron-app",
+  "version": "1.0.0",
+  "description": "Gantt Chart per la gestione dei trapianti degli organi per l'ospedale San Camillo",
+  "main": "backend/main.js",
+  "author": "Emilia Russo",
+  "license": "Apache-2.0",
+  "scripts": {
+    "start": "electron .",
+    "dist": "electron-builder"
+  },
+  "dependencies": {
+    "better-sqlite3": "^12.2.0"
+  },
+  "devDependencies": {
+    "@electron/rebuild": "^4.0.1",
+    "electron": "^37.2.3",
+    "electron-builder": "^26.0.12",
+    "electron-rebuild": "^3.2.9"
+  },
+  "build": {
+    "appId": "it.sancamillo.gestionetrapianti",
+    "productName": "GestioneTrapiantiOrgani",
+    "directories": {
+      "buildResources": "assets",
+      "output": "dist"
+    },
+    "files": [
+      "backend/**/*",
+      "frontend/**/*",
+      "!backend/tasks.db"
+    ],
+    "extraResources": [
+      {
+        "from": "backend/tasks.db",
+        "to": "tasks.db"
+      },
+      {
+        "from": "backend/data/",
+        "to": "data",
+        "filter": [
+          "**/*"
+        ]
+      }
+    ],
+    "win": {
+      "target": "nsis",
+      "icon": "assets/icon.ico"
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": true,
+      "allowElevation": true,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "shortcutName": "Gestione Trapianto Organi"
+    }
+  }
+}

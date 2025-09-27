@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <title>Lista Pazienti</title>
+  <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+  <meta http-equiv="Content-Security-Policy" content="script-src 'self' https://fonts.googleapis.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;">
+  <style>
+    body { font-family: 'Roboto', Arial, sans-serif; background: #f6f6f6; margin:0; }
+    .container { max-width: 600px; margin: 40px auto; background: #fff; border-radius: 10px; box-shadow: 0 2px 10px #0001; padding: 32px; }
+    h2 { text-align: center; margin-bottom: 24px; }
+    #pazienti-list { padding: 0; margin: 0; }
+
+    .paziente-card {
+      background: #e3f0ff;
+      border-radius: 8px;
+      padding: 14px 14px;
+      margin-bottom: 12px;
+      box-shadow: 0 2px 8px #0001;
+      border: 1px solid #b3d4fc;
+      font-size: 18px;
+      font-weight: 500;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: box-shadow 0.2s, background 0.2s;
+      cursor: pointer;
+    }
+    .paziente-card:hover { box-shadow: 0 4px 16px #007bff22; background: #d0e7ff; }
+    .paziente-name { user-select: none; }
+
+    .actions { display: flex; gap: 8px; align-items: center; }
+    .btn-delete {
+      background: #e53935; color: #fff; border: none;
+      padding: 6px 10px; border-radius: 6px; font-size: 14px; cursor: pointer;
+    }
+    .btn-delete:hover { filter: brightness(0.95); }
+
+    #addPatientBtn {
+      display: block; margin: 24px auto 0 auto; padding: 10px 24px;
+      background: #4F46E5; color: #fff; border: none; border-radius: 6px; font-size: 16px; cursor: pointer;
+    }
+
+    #addPatientModal {
+      display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+      background: rgba(0,0,0,0.3); align-items: center; justify-content: center; z-index: 1000;
+    }
+    #addPatientModal .modal-content { background: #fff; padding: 24px; border-radius: 8px; min-width: 300px; }
+    #addPatientModal input { width: 100%; margin-bottom: 12px; padding: 8px; border-radius: 4px; border: 1px solid #ccc; }
+    #addPatientModal button { margin-right: 8px; }
+
+    nav { width:100%; padding:12px 0; background:#fff; box-shadow:0 2px 4px rgba(0,0,0,0.08); margin-bottom:20px; }
+    #logoutBtn {
+      background:#e53935; color:#fff; border:none; padding:8px 18px; border-radius:5px; font-weight:bold; cursor:pointer; margin-left:32px;
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <button id="logoutBtn">Logout</button>
+    <button id="viewLogsBtn" style="display:none; margin-left:12px;">Vedi Log</button>
+  </nav>
+
+  <div class="container">
+    <h2>Lista Pazienti</h2>
+    <div id="pazienti-list"><!-- riempito da JS --></div>
+    <button id="addPatientBtn">Aggiungi paziente</button>
+  </div>
+  
+
+  <!-- Modal per aggiungere paziente (ANONIMO: solo identificativo) -->
+  <div id="addPatientModal">
+    <div class="modal-content">
+      <h3>Aggiungi Paziente</h3>
+      <input type="text" id="identificativoPaziente" placeholder="Identificativo paziente" required />
+      <button id="savePatientBtn">Salva</button>
+      <button id="closePatientModalBtn">Annulla</button>
+    </div>
+  </div>
+
+  <script src="pazienti.js"></script>
+</body>
+</html>

@@ -1,0 +1,207 @@
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Roboto', sans-serif;
+  background: #77d6ff;  
+  background-size: auto; 
+  background-repeat: repeat; 
+  background-position: center center; 
+  min-height: 100vh;
+}
+#reenterTimeBtn {
+      margin-top: 20px;
+      background-color: #e52c2c;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      font-size: 16px;
+      font-weight: bold;
+      border-radius: 8px;
+      cursor: pointer;
+      box-shadow: 10px 2px 10px rgba(0, 0, 0, 0.2);
+      transition: background-color 0.3s, box-shadow 0.3s, transform 0.1s;
+      z-index: 9999; /* assicurati che sia sopra altri elementi */
+    }
+
+
+
+#container {
+  padding: 15px;
+  margin-top: 10px;
+}
+
+svg {
+  background: #ffffff79;  
+  border: 1px solid #ccccccb4;
+}
+
+.task {
+  stroke: #ece6e6;
+  stroke-width: 2px;
+
+}
+
+/* Stile modale (popup) */
+.modal {
+  display: flex;
+  position: fixed;
+  z-index: 999;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.5);
+  align-items: center;
+  justify-content: center;
+}
+
+.modal.hidden {
+  display: none;
+}
+
+.modal-content {
+  background-color: rgb(255, 255, 255);
+  padding: 20px 30px;
+  border-radius: 10px;
+  text-align: center;
+  box-shadow: 0px 5px 15px rgba(0,0,0,0.3);
+  max-width: 400px;
+  width: 90%;
+}
+
+.close-button {
+  float: right;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+/* input e button modale */
+.modal-content input[type="time"] {
+  margin-top: 15px;
+  padding: 10px;
+  font-size: 16px;
+}
+
+.modal-content button {
+  margin-top: 15px;
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: white;
+  font-size: 14px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.modal-content button:hover {
+  background-color: #0056b3;
+}
+
+/* close-button è già definito sopra, quindi tolgo duplicato */
+
+#tooltip {
+  position: absolute;
+  background-color: rgba(30, 30, 30, 0.9);
+  color: #ffffff;
+  padding: 20px; /* Rimpiazza il padding orizzontale eccessivo */
+  border-radius: 8px;
+  font-size: 18px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  line-height: 1.3;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+
+  /* Aggiunte fondamentali */
+  max-width: 400px; /* limita la larghezza massima del tooltip */
+  width: max-content; /* si adatta al contenuto */
+  white-space: normal; /* consente al testo di andare a capo */
+  word-wrap: break-word; /* forza a capo le parole troppo lunghe */
+  text-align: left; /* allinea il testo a sinistra */
+}
+
+
+/* colore speciale solo per il nome del task */
+#tooltip .task-name {
+  color: #ffffff;  /* un azzurro chiaro */
+  font-weight: 900;
+}
+
+#tooltip .task-note {
+  color: #f96f9d;  /* un azzurro chiaro */
+  font-weight: 900;
+}
+
+#tooltip .task-d {
+  color: #b7e8ff;  /* un azzurro chiaro */
+  font-weight: 900;
+}
+
+
+#notePopup textarea {
+  width: 100%;
+  font-size: 16px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  resize: vertical;
+  min-height: 150px;
+  min-width: 400px;
+}
+
+/* Stile base comune */
+#saveNoteBtn,
+#closeNoteBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.6em 1.4em;
+  font-size: 1rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: transform 0.1s ease, box-shadow 0.2s ease, background 0.2s ease;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  margin-left: 8px; /* separazione tra i bottoni */
+}
+
+/* Bottone “Salva” */
+#saveNoteBtn {
+  background: linear-gradient(135deg, #4F46E5 0%, #8B5CF6 100%);
+  color: #fff;
+  box-shadow: 0 6px 16px rgba(99,102,241,0.3);
+}
+#saveNoteBtn:hover {
+  background: linear-gradient(135deg, #4338CA 0%, #7C3AED 100%);
+}
+#saveNoteBtn:active {
+  transform: scale(0.96);
+  box-shadow: 0 3px 8px rgba(0,0,0,0.15);
+}
+
+/* Bottone “Chiudi” */
+#closeNoteBtn {
+  background-color: #f3f4f6;
+  color: #374151;
+}
+#closeNoteBtn:hover {
+  background-color: #e5e7eb;
+}
+#closeNoteBtn:active {
+  transform: scale(0.96);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+/* Icone decorative (opzionale) */
+#saveNoteBtn::before {
+  content: "💾";
+  margin-right: 6px;
+  display: inline-block;
+}
+#closeNoteBtn::before {
+  content: "✖️";
+  margin-right: 6px;
+  display: inline-block;
+}
+
+;

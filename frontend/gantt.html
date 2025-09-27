@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <title>Gantt Donatore</title>
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- Barra superiore (usa il tuo style.css) -->
+  <nav>
+    <span>Donatore: <strong id="patientIdent">—</strong></span>
+    <button id="reenterTimeBtn">Rinserisci orario</button>
+    <button id="backBtn">Lista Donatori</button>
+    <button id="logoutBtn">Logout</button>
+  </nav>
+
+  <!-- Modale orario (classi generiche: modal / modal-content) -->
+  <div id="ganttModal" class="modal">
+    <div class="modal-content">
+      <h2>Modifica orario di inizio</h2>
+      <label for="ganttDatetimeInput">Orario:</label>
+      <input type="datetime-local" id="ganttDatetimeInput" required />
+      <br /><br />
+      <button id="ganttSaveBtn">Salva</button>
+      <button id="ganttCancelBtn">Annulla</button>
+    </div>
+  </div>
+
+  <!-- Popup note -->
+  <div id="notePopup" class="modal">
+    <div class="modal-content">
+      <h3>Nota per il task</h3>
+      <textarea id="noteInput" rows="4"></textarea>
+      <br><br>
+      <button id="saveNoteBtn">Salva</button>
+      <button id="closeNoteBtn" onclick="closeNotePopup()">Chiudi</button>
+    </div>
+  </div>
+
+  <!-- Contenitore Gantt -->
+  <div id="container">
+    <div class="svg"></div>
+  </div>
+
+  <script src="gantt.js"></script>
+</body>
+</html>

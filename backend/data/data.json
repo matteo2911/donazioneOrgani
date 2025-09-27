@@ -1,0 +1,258 @@
+[
+  {
+    "id": "1",
+    "name": "Monitoraggio",
+    "duration": 360,
+    "description": "Monitoraggio di 6 ore necessario per accertare la diagnosi di morte cerebrale",
+    "dependencies": []
+  },
+  {
+    "id": "2",
+    "name": "Consenso",
+    "duration": 201,
+    "description": "",
+    "dependencies": []
+  },
+  {
+    "id": "3",
+    "name": "Piano CNT preliminare",
+    "duration": 17,
+    "description": "",
+    "dependencies": []
+  },
+  {
+    "id": "4",
+    "name": "Anamnesi",
+    "duration": 46,
+    "description": "",
+    "dependencies": []
+  },
+  {
+    "id": "5",
+    "name": "Scheda Infettivologica",
+    "duration": 143,
+    "description": "",
+    "dependencies": []
+  },
+  {
+    "id": "6",
+    "name": "Invio Campioni",
+    "duration": 105,
+    "description": "",
+    "dependencies": []
+  },
+  {
+    "id": "7",
+    "name": "Esami Virologici",
+    "duration": 221,
+    "description": "",
+    "dependencies": ["6"]
+  },
+  {
+    "id": "8",
+    "name": "BAL Covid",
+    "duration": 260,
+    "description": "",
+    "dependencies": ["6"]
+  },
+  {
+    "id": "9",
+    "name": "Tipizzazione",
+    "duration": 220,
+    "description": "",
+    "dependencies": ["2", "6"]
+  },
+  {
+    "id": "10",
+    "name": "Elettrocardiogramma",
+    "duration": 57,
+    "description": "",
+    "dependencies": []
+  },
+  {
+    "id": "11",
+    "name": "RX Torace",
+    "duration": 71,
+    "description": "",
+    "dependencies": []
+  },
+  {
+    "id": "12",
+    "name": "Esami Colturali",
+    "duration": 95,
+    "description": "",
+    "dependencies": []
+  },
+  {
+    "id": "13",
+    "name": "Esami Ematochimici",
+    "duration": 77,
+    "description": "",
+    "dependencies": []
+  },
+  {
+    "id": "14",
+    "name": "Emogasanalisi",
+    "duration": 63,
+    "description": "",
+    "dependencies": []
+  },
+  {
+    "id": "15",
+    "name": "Broncoscopia",
+    "duration": 76,
+    "description": "",
+    "dependencies": ["2"]
+  },
+  {
+    "id": "16",
+    "name": "Ecografia Addome",
+    "duration": 76,
+    "description": "",
+    "dependencies": ["2"]
+  },
+  {
+    "id": "17",
+    "name": "Ecografia Cardiaca",
+    "duration": 70,
+    "description": "",
+    "dependencies": ["2"]
+  },
+  {
+    "id": "18",
+    "name": "Ecografia Cardiaca Transesofagea",
+    "duration": 78,
+    "description": "",
+    "dependencies": ["2"]
+  },
+  {
+    "id": "19",
+    "name": "Ecografia Epatica",
+    "duration": 54,
+    "description": "",
+    "dependencies": ["2"]
+  },
+  {
+    "id": "20",
+    "name": "Ecografia della Mammella",
+    "duration": 78,
+    "description": "",
+    "dependencies": ["2"]
+  },
+  {
+    "id": "21",
+    "name": "Ecografia Pelvica",
+    "duration": 30,
+    "description": "",
+    "dependencies": ["2"]
+  },
+  {
+    "id": "22",
+    "name": "Ecografia Prostatica",
+    "duration": 47,
+    "description": "",
+    "dependencies": ["2"]
+  },
+  {
+    "id": "23",
+    "name": "Ecografia Renale",
+    "duration": 36,
+    "description": "",
+    "dependencies": ["2"]
+  },
+  {
+    "id": "24",
+    "name": "Ecografia Tiroidea",
+    "duration": 70,
+    "description": "",
+    "dependencies": ["2"]
+  },
+  {
+    "id": "25",
+    "name": "Coronografia",
+    "duration": 87,
+    "description": "",
+    "dependencies": ["1", "2"]
+  },
+  {
+    "id": "26",
+    "name": "TAC Addome",
+    "duration": 48,
+    "description": "",
+    "dependencies": ["1", "2"]
+  },
+  {
+    "id": "27",
+    "name": "TAC Torace",
+    "duration": 51,
+    "description": "",
+    "dependencies": ["1", "2"]
+  },
+  {
+    "id": "28",
+    "name": "Second Opinion in Anatomia Patologica",
+    "duration": 67,
+    "description": "",
+    "dependencies": ["2"]
+  },
+  {
+    "id": "29",
+    "name": "Second Opinion Ematologica",
+    "duration": 67,
+    "description": "",
+    "dependencies": ["2"]
+  },
+  {
+    "id": "30",
+    "name": "Second Opinion Infettivologica",
+    "duration": 67,
+    "description": "",
+    "dependencies": ["2"]
+  },
+  {
+    "id": "31",
+    "name": "Second Opinion Oncologica",
+    "duration": 67,
+    "description": "",
+    "dependencies": ["2"]
+  },
+  {
+    "id": "32",
+    "name": "Definizione Livello di Rischio",
+    "duration": 11,
+    "description": "",
+    "dependencies": [
+      "4", "5", "7", "8", "10", "11", "12", "13", "14", "15",
+      "16", "17", "18", "19", "20", "21", "22", "23", "24",
+      "25", "26", "27"
+    ]
+  },
+  {
+    "id": "33",
+    "name": "Piano CNT",
+    "duration": 17,
+    "description": "",
+    "dependencies": ["3", "32"]
+  },
+  {
+    "id": "34",
+    "name": "Allocazione Organi",
+    "duration": 337,
+    "description": "",
+    "dependencies": ["33", "9"]
+  },
+  {
+    "id": "35",
+    "name": "Definizione Orario Prelievo",
+    "duration": 184,
+    "description": "",
+    "dependencies": ["34"]
+  },
+  {
+    "id": "36",
+    "name": "Prelievo",
+    "duration": 228,
+    "description": "",
+    "dependencies": ["35"]
+  }
+]
