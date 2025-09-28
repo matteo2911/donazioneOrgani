@@ -46,7 +46,7 @@ window.addEventListener('DOMContentLoaded', () => {
           delBtn.addEventListener('click', async (e) => {
             e.stopPropagation();
             const ok = window.confirm(
-              `Confermi l'eliminazione del paziente #${p.id} (${p.identificativo})?\n` +
+              `Confermi l'eliminazione del donatore :  ${p.identificativo}?\n` +
               `Verranno rimossi anche Gantt e Task correlati.`
             );
             if (!ok) return;

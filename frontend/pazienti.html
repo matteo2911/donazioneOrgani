@@ -2,7 +2,7 @@
 <html lang="it">
 <head>
   <meta charset="UTF-8" />
-  <title>Lista Pazienti</title>
+  <title>Lista Donatori</title>
   <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet" />
   <link rel="stylesheet" href="style.css" />
   <meta http-equiv="Content-Security-Policy"
@@ -17,19 +17,20 @@
 
   <!-- Card contenuto -->
   <div class="card card--lg centered">
-    <h2 style="margin-top:0;">Lista Pazienti</h2>
-
+    <h2 style="margin-top:0;">Lista Donatori</h2>
+    
+    <button id="addPatientBtn" class="btn btn--primary w-100" style="margin-bottom:16px;">
+      Aggiungi Donatore
+    </button>
+    
     <div id="pazienti-list" class="list"><!-- riempito da JS --></div>
 
-    <button id="addPatientBtn" class="btn btn--primary w-100" style="margin-top:16px;">
-      Aggiungi paziente
-    </button>
   </div>
 
   <!-- Modal: aggiungi paziente -->
   <div id="addPatientModal" class="modal hidden">
     <div class="modal__content">
-      <h3 class="modal__title">Aggiungi Paziente</h3>
+      <h3 class="modal__title">Aggiungi Donatore</h3>
       <input type="text" id="identificativoPaziente" placeholder="Identificativo paziente" required />
       <div class="modal__actions">
         <button id="closePatientModalBtn" class="btn btn--secondary">Annulla</button>
