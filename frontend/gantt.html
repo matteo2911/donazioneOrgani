@@ -9,41 +9,64 @@
 </head>
 <body>
 
-  <!-- Barra superiore (usa il tuo style.css) -->
-  <nav>
-    <span>Donatore: <strong id="patientIdent">—</strong></span>
-    <button id="reenterTimeBtn">Rinserisci orario</button>
-    <button id="backBtn">Lista Donatori</button>
-    <button id="logoutBtn">Logout</button>
+  <!-- Topbar -->
+  <nav class="do-topbar">
+    <div class="do-topbar__left">Donatore: <strong id="patientIdent">—</strong></div>
+    <button id="reenterTimeBtn" class="btn btn--primary">Rinserisci orario</button>
+    <button id="backBtn" class="btn btn--primary">Lista Donatori</button>
+    <button id="logoutBtn" class="btn  btn--danger ml-autot">Logout</button>
   </nav>
 
-  <!-- Modale orario (classi generiche: modal / modal-content) -->
-  <div id="ganttModal" class="modal">
-    <div class="modal-content">
-      <h2>Modifica orario di inizio</h2>
-      <label for="ganttDatetimeInput">Orario:</label>
+  <!-- Modale: impostazione orario Gantt -->
+  <div id="ganttModal" class="modal hidden">
+    <div class="modal__content">
+      <div class="modal__header">
+        <h2 class="modal__title">Modifica orario di inizio</h2>
+      </div>
+      <label for="ganttDatetimeInput" class="mb-2">Orario:</label>
       <input type="datetime-local" id="ganttDatetimeInput" required />
-      <br /><br />
-      <button id="ganttSaveBtn">Salva</button>
-      <button id="ganttCancelBtn">Annulla</button>
+      <div class="modal__actions mt-3">
+        <button id="ganttCancelBtn" class="btn btn--secondary">Annulla</button>
+        <button id="ganttSaveBtn" class="btn btn--primary">Salva</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modale generica per showModal() -->
+  <div id="customModal" class="modal hidden">
+    <div class="modal__content">
+      <div style="display:flex; justify-content: space-between; align-items: center;">
+        <h3 class="modal__title">Avviso</h3>
+        <span class="modal__close close-button" aria-label="Chiudi">&times;</span>
+      </div>
+      <p id="modalMessage" class="mb-3"></p>
+      <div class="modal__actions">
+        <button class="btn btn--primary close-button">Ok</button>
+      </div>
     </div>
   </div>
 
   <!-- Popup note -->
-  <div id="notePopup" class="modal">
-    <div class="modal-content">
-      <h3>Nota per il task</h3>
+  <div id="notePopup" class="modal hidden">
+    <div class="modal__content">
+      <h3 class="modal__title">Nota per il task</h3>
       <textarea id="noteInput" rows="4"></textarea>
-      <br><br>
-      <button id="saveNoteBtn">Salva</button>
-      <button id="closeNoteBtn" onclick="closeNotePopup()">Chiudi</button>
+      <div class="modal__actions">
+        <button id="closeNoteBtn" class="btn btn--secondary">Chiudi</button>
+        <button id="saveNoteBtn" class="btn btn--primary">Salva</button>
+      </div>
     </div>
   </div>
 
+  <!-- Tooltip usato da D3 -->
+  <div id="tooltip"></div>
+
   <!-- Contenitore Gantt -->
-  <div id="container">
-    <div class="svg"></div>
-  </div>
+  <main class="container">
+    <div id="container">
+      <div class="svg"></div>
+    </div>
+  </main>
 
   <script src="gantt.js"></script>
 </body>

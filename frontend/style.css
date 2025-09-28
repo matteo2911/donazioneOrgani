@@ -1,207 +1,302 @@
-body {
+/* =========================
+   UI base
+   ========================= */
+:root{
+  --bg: #77d6ff;
+  --surface: #ffffff;
+  --surface-2: #f3f4f6;
+  --text: #111827;
+  --muted: #6b7280;
+  --primary: #4F46E5;
+  --primary-600: #4338CA;
+  --accent: #8B5CF6;
+  --danger: #e52c2c;
+
+  /* stati task */
+  --task-non-iniziato: rgba(75,73,227,1);
+  --task-richiesto: rgb(233,238,160);
+  --task-iniziato: rgb(255,197,72);
+  --task-terminato: rgb(160,248,175);
+}
+
+* { box-sizing: border-box; }
+html, body { height: 100%; }
+body{
   margin: 0;
-  padding: 0;
-  font-family: 'Roboto', sans-serif;
-  background: #77d6ff;  
-  background-size: auto; 
-  background-repeat: repeat; 
-  background-position: center center; 
+  font-family: 'Roboto', system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, 'Helvetica Neue', Arial, "Noto Sans", "Apple Color Emoji","Segoe UI Emoji";
+  color: var(--text);
+  background: var(--bg);
   min-height: 100vh;
 }
-#reenterTimeBtn {
-      margin-top: 20px;
-      background-color: #e52c2c;
-      color: white;
-      border: none;
-      padding: 10px 20px;
-      font-size: 16px;
-      font-weight: bold;
-      border-radius: 8px;
-      cursor: pointer;
-      box-shadow: 10px 2px 10px rgba(0, 0, 0, 0.2);
-      transition: background-color 0.3s, box-shadow 0.3s, transform 0.1s;
-      z-index: 9999; /* assicurati che sia sopra altri elementi */
-    }
 
-
-
-#container {
-  padding: 15px;
-  margin-top: 10px;
-}
-
-svg {
-  background: #ffffff79;  
-  border: 1px solid #ccccccb4;
-}
-
-.task {
-  stroke: #ece6e6;
-  stroke-width: 2px;
-
-}
-
-/* Stile modale (popup) */
-.modal {
-  display: flex;
-  position: fixed;
-  z-index: 999;
-  left: 0;
+/* =========================
+   Topbar
+   ========================= */
+.do-topbar{
+  position: sticky;
   top: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0,0,0,0.5);
+  z-index: 100;
+  display: flex;
+  gap: 10px;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-end;
+  padding: 10px 14px;
+  background: rgba(255,255,255,0.85);
+  backdrop-filter: blur(6px);
+  border-bottom: 1px solid rgba(0,0,0,0.06);
 }
-
-.modal.hidden {
-  display: none;
+.do-topbar .do-topbar__left{
+  margin-right: auto;
+  font-weight: 600;
 }
+.do-topbar strong{ font-weight: 800; }
 
-.modal-content {
-  background-color: rgb(255, 255, 255);
-  padding: 20px 30px;
-  border-radius: 10px;
-  text-align: center;
-  box-shadow: 0px 5px 15px rgba(0,0,0,0.3);
-  max-width: 400px;
-  width: 90%;
-}
-
-.close-button {
-  float: right;
-  font-size: 20px;
-  cursor: pointer;
-}
-
-/* input e button modale */
-.modal-content input[type="time"] {
-  margin-top: 15px;
-  padding: 10px;
-  font-size: 16px;
-}
-
-.modal-content button {
-  margin-top: 15px;
-  padding: 10px 20px;
-  background-color: #007bff;
-  color: white;
-  font-size: 14px;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-}
-
-.modal-content button:hover {
-  background-color: #0056b3;
-}
-
-/* close-button è già definito sopra, quindi tolgo duplicato */
-
-#tooltip {
-  position: absolute;
-  background-color: rgba(30, 30, 30, 0.9);
-  color: #ffffff;
-  padding: 20px; /* Rimpiazza il padding orizzontale eccessivo */
-  border-radius: 8px;
-  font-size: 18px;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  line-height: 1.3;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-  opacity: 0;
-  transition: opacity 0.3s ease;
-
-  /* Aggiunte fondamentali */
-  max-width: 400px; /* limita la larghezza massima del tooltip */
-  width: max-content; /* si adatta al contenuto */
-  white-space: normal; /* consente al testo di andare a capo */
-  word-wrap: break-word; /* forza a capo le parole troppo lunghe */
-  text-align: left; /* allinea il testo a sinistra */
-}
-
-
-/* colore speciale solo per il nome del task */
-#tooltip .task-name {
-  color: #ffffff;  /* un azzurro chiaro */
-  font-weight: 900;
-}
-
-#tooltip .task-note {
-  color: #f96f9d;  /* un azzurro chiaro */
-  font-weight: 900;
-}
-
-#tooltip .task-d {
-  color: #b7e8ff;  /* un azzurro chiaro */
-  font-weight: 900;
-}
-
-
-#notePopup textarea {
-  width: 100%;
-  font-size: 16px;
-  border-radius: 6px;
-  border: 1px solid #ccc;
-  resize: vertical;
-  min-height: 150px;
-  min-width: 400px;
-}
-
-/* Stile base comune */
-#saveNoteBtn,
-#closeNoteBtn {
+/* =========================
+   Bottoni
+   ========================= */
+.btn{
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 0.6em 1.4em;
+  gap: .45rem;
+  padding: .55rem 1rem;
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 1;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  transition: transform .08s ease, box-shadow .2s ease, background .2s ease, opacity .2s ease;
+  user-select: none;
+}
+.btn:active{ transform: scale(.98); }
+.btn--primary{ background: linear-gradient(135deg,var(--primary) 0%, var(--accent) 100%); color: #fff; }
+.btn--primary:hover{ background: linear-gradient(135deg,var(--primary-600) 0%, var(--accent) 100%); }
+.btn--secondary{background: #e5e7eb;  color: #0f172a;}       
+.btn--secondary:hover{background: #d1d5db;}
+.btn--danger{ background: var(--danger); color: #fff; }
+.btn--ghost{ background: transparent; border: 1px solid rgba(0,0,0,.1); }
+
+/* stile specifico per il bottone legacy, lasciamo anche l’ID */
+#reenterTimeBtn{
+  margin-left: auto;
+}
+#reenterTimeBtn.btn--danger{
+  box-shadow: 10px 2px 10px rgba(0,0,0,0.2);
+}
+
+/* =========================
+   Layout contenuto
+   ========================= */
+.container{
+  padding: 16px;
+}
+
+/* =========================
+   SVG / Gantt
+   ========================= */
+svg{
+  background: #ffffff79;
+  border: 1px solid #ccccccb4;
+}
+.task{
+  stroke: #ece6e6;
+  stroke-width: 2px;
+}
+
+/* =========================
+   Tooltip
+   ========================= */
+#tooltip{
+  position: absolute;
+  background-color: rgba(30,30,30,.92);
+  color: #fff;
+  padding: 16px 18px;
+  border-radius: 10px;
+  font-size: 16px;
+  line-height: 1.4;
+  box-shadow: 0 8px 24px rgba(0,0,0,.35);
+  opacity: 0;
+  transition: opacity .25s ease;
+  max-width: 420px;
+  width: max-content;
+  white-space: normal;
+  word-wrap: break-word;
+  text-align: left;
+  pointer-events: none;
+  z-index: 999;
+}
+#tooltip .task-name{ color:#fff; font-weight: 900; }
+#tooltip .task-note{ color:#f96f9d; font-weight: 900; }
+#tooltip .task-d{ color:#b7e8ff; font-weight: 900; }
+
+/* =========================
+   Modal 
+   ========================= */
+.modal{
+  display: flex;
+  position: fixed;
+  inset: 0;
+  z-index: 999;
+  background: rgba(0,0,0,.45);
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+.modal.hidden{ display: none; }
+
+.modal__content{
+  background: var(--surface);
+  width: min(560px, 92vw);
+  padding: 22px 26px;
+  border-radius: 14px;
+  box-shadow: 0 20px 48px rgba(0,0,0,.22);
+}
+.modal__title{
+  margin: 0 0 10px 0;
+  font-size: 20px;
+}
+.modal__actions{
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+  margin-top: 16px;
+}
+.modal__close{
+  cursor: pointer;
+  font-size: 18px;
+  line-height: 1;
+  opacity: .7;
+}
+.modal__close:hover{ opacity: 1; }
+
+/* Campi form*/
+input[type="text"],
+input[type="password"],
+input[type="email"],
+input[type="time"],
+input[type="date"],
+input[type="datetime-local"],
+textarea,
+select{
+  width: 100%;
+  padding: .65rem .75rem;
+  border-radius: 10px;
+  border: 1px solid #d1d5db;
+  font-size: 14px;
+  background: #fff;
+  outline: none;
+  margin-bottom: 12px;
+}
+textarea{ min-height: 140px; resize: vertical; }
+
+/* Bottoni nota  */
+#saveNoteBtn, #closeNoteBtn{
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: .6em 1.2em;
   font-size: 1rem;
   font-weight: 600;
   border: none;
-  border-radius: 8px;
+  border-radius: 10px;
   cursor: pointer;
-  transition: transform 0.1s ease, box-shadow 0.2s ease, background 0.2s ease;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-  margin-left: 8px; /* separazione tra i bottoni */
+  transition: transform .08s ease, box-shadow .2s ease, background .2s ease;
+  box-shadow: 0 4px 12px rgba(0,0,0,.05);
+}
+#saveNoteBtn{ background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%); color:#fff; }
+#saveNoteBtn:hover{ background: linear-gradient(135deg, var(--primary-600) 0%, var(--accent) 100%); }
+#saveNoteBtn:active{ transform: scale(.96); }
+#saveNoteBtn::before { content: "💾"; margin-right: 6px; }
+#closeNoteBtn{ background: var(--surface-2); color:#374151; }
+#closeNoteBtn:hover{ background:#e5e7eb; }
+#closeNoteBtn:active{ transform: scale(.96); }
+#closeNoteBtn::before { content: "✖️"; margin-right: 6px; }
+
+/* =========================
+   Helper / Utilities
+   ========================= */
+.hidden{ display: none !important; }
+.mt-2{ margin-top: .5rem; }
+.mt-3{ margin-top: .75rem; }
+.mb-2{ margin-bottom: .5rem; }
+.mb-3{ margin-bottom: .75rem; }
+
+
+/* === Cards, layout centrato (login) === */
+.page-center{
+  display:flex;
+  min-height:100vh;
+  align-items:center;
+  justify-content:center;
+  padding:16px;
+}
+.card{
+  background: var(--surface);
+  padding: 28px;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0,0,0,.10);
+  width: min(360px, 92vw);
+}
+.card h2{ margin: 0 0 16px; }
+
+/* === Tabelle logs === */
+.table{ width:100%; border-collapse: collapse; }
+.table th, .table td{
+  padding:10px; border-bottom:1px solid #eee; text-align:left; font-size:14px;
+}
+.table thead th{ background:#f8fafc; }
+
+/* utilità usate da logs */
+.muted{ color:#666; }
+.mono{ font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; font-size:12px; }
+
+/* contenitore “card” grande */
+.card-wrap{
+  max-width: 1100px;
+  margin: 24px auto;
+  background: var(--surface);
+  border-radius: 12px;
+  box-shadow: 0 2px 10px rgba(0,0,0,.06);
+  padding: 20px;
 }
 
-/* Bottone “Salva” */
-#saveNoteBtn {
-  background: linear-gradient(135deg, #4F46E5 0%, #8B5CF6 100%);
-  color: #fff;
-  box-shadow: 0 6px 16px rgba(99,102,241,0.3);
-}
-#saveNoteBtn:hover {
-  background: linear-gradient(135deg, #4338CA 0%, #7C3AED 100%);
-}
-#saveNoteBtn:active {
-  transform: scale(0.96);
-  box-shadow: 0 3px 8px rgba(0,0,0,0.15);
-}
+/* === Paziente: layout e form === */
+.card--md{ width: min(520px, 92vw); }
+.card.centered{ margin: 24px auto; }
+.actions{ display:flex; gap:12px; margin-top:20px; }
+.actions .btn{ flex:1; }
 
-/* Bottone “Chiudi” */
-#closeNoteBtn {
-  background-color: #f3f4f6;
-  color: #374151;
-}
-#closeNoteBtn:hover {
-  background-color: #e5e7eb;
-}
-#closeNoteBtn:active {
-  transform: scale(0.96);
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-}
+/* Spaziatura base nei form */
+.form .row{ margin-bottom:12px; }
 
-/* Icone decorative (opzionale) */
-#saveNoteBtn::before {
-  content: "💾";
-  margin-right: 6px;
-  display: inline-block;
+/* === Lista pazienti === */
+.list{ display:flex; flex-direction:column; gap:12px; margin:0; padding:0; }
+.list-item{
+  background:#e3f0ff;
+  border:1px solid #b3d4fc;
+  border-radius:8px;
+  padding:14px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  box-shadow:0 2px 8px rgba(0,0,0,.06);
+  font-size:18px;
+  font-weight:500;
+  cursor:pointer;
+  transition: box-shadow .2s ease, background .2s ease;
 }
-#closeNoteBtn::before {
-  content: "✖️";
-  margin-right: 6px;
-  display: inline-block;
-}
+.list-item:hover{ box-shadow:0 4px 16px #007bff22; background:#d0e7ff; }
+.list-item__title{ user-select:none; }
+.list-item__actions{ display:flex; gap:8px; align-items:center; margin-left:auto; }
 
-;
+/* contenitore pagina */
+.card--lg{ width:min(640px, 92vw); }
+.card.centered{ margin:24px auto; }
+
+/* utility */
+.w-100{ width:100%; }
+.ml-auto{ margin-left:auto; }
+
+

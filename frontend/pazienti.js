@@ -1,25 +1,26 @@
 window.addEventListener('DOMContentLoaded', () => {
-  const list      = document.getElementById('pazienti-list');
-  const modal     = document.getElementById('addPatientModal');
-  const addBtn    = document.getElementById('addPatientBtn');
-  const closeBtn  = document.getElementById('closePatientModalBtn');
-  const saveBtn   = document.getElementById('savePatientBtn');
-  const identInput= document.getElementById('identificativoPaziente');
+  const list       = document.getElementById('pazienti-list');
+  const modal      = document.getElementById('addPatientModal');
+  const addBtn     = document.getElementById('addPatientBtn');
+  const closeBtn   = document.getElementById('closePatientModalBtn');
+  const saveBtn    = document.getElementById('savePatientBtn');
+  const identInput = document.getElementById('identificativoPaziente');
 
-  // ruolo dal login
   const role = (localStorage.getItem('role') || '').toLowerCase();
   const isAdmin = role === 'admin';
 
-  // Mostra "Vedi Log" solo all'admin
   const viewLogsBtn = document.getElementById('viewLogsBtn');
   if (viewLogsBtn) {
     if (isAdmin) {
-      viewLogsBtn.style.display = 'inline-block';
+      viewLogsBtn.style.display = 'inline-flex';
       viewLogsBtn.onclick = () => (window.location.href = 'logs.html');
     } else {
       viewLogsBtn.style.display = 'none';
     }
   }
+
+  function show(el){ el && el.classList.remove('hidden'); }
+  function hide(el){ el && el.classList.add('hidden'); }
 
   async function loadPatients() {
     try {
@@ -28,18 +29,18 @@ window.addEventListener('DOMContentLoaded', () => {
 
       (pazienti || []).forEach(p => {
         const card = document.createElement('div');
-        card.className = 'paziente-card';
+        card.className = 'list-item';
 
-        const name = document.createElement('div');
-        name.className = 'paziente-name';
-        name.textContent = p.identificativo;
+        const title = document.createElement('div');
+        title.className = 'list-item__title';
+        title.textContent = p.identificativo;
 
         const actions = document.createElement('div');
-        actions.className = 'actions';
+        actions.className = 'list-item__actions';
 
         if (isAdmin) {
           const delBtn = document.createElement('button');
-          delBtn.className = 'btn-delete';
+          delBtn.className = 'btn btn--danger';
           delBtn.textContent = 'Elimina';
           delBtn.title = 'Elimina paziente (e relativo gantt/tasks)';
           delBtn.addEventListener('click', async (e) => {
@@ -70,14 +71,14 @@ window.addEventListener('DOMContentLoaded', () => {
           window.location.href = `paziente.html?id=${p.id}`;
         });
 
-        card.appendChild(name);
+        card.appendChild(title);
         card.appendChild(actions);
         list.appendChild(card);
       });
 
       if (!pazienti || pazienti.length === 0) {
         const empty = document.createElement('div');
-        empty.style.color = '#666';
+        empty.className = 'muted';
         empty.style.textAlign = 'center';
         empty.style.padding = '12px 0';
         empty.textContent = 'Nessun paziente';
@@ -89,19 +90,15 @@ window.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // Apre/chiude modale
+  // Modale: apri/chiudi
   addBtn.onclick = () => {
-    if (!modal) return;
-    modal.style.display = 'flex';
+    show(modal);
     if (identInput) identInput.value = '';
+    identInput?.focus?.();
   };
 
-  closeBtn.onclick = () => { if (modal) modal.style.display = 'none'; };
-  if (modal) {
-    modal.addEventListener('click', (e) => {
-      if (e.target === modal) modal.style.display = 'none';
-    });
-  }
+  closeBtn.onclick = () => hide(modal);
+  modal?.addEventListener('click', (e) => { if (e.target === modal) hide(modal); });
 
   // Salvataggio nuovo paziente
   saveBtn.onclick = async () => {
@@ -114,11 +111,10 @@ window.addEventListener('DOMContentLoaded', () => {
     try {
       const res = await window.api.createPatientAndGantt({ identificativo });
       if (res?.success) {
-        if (modal) modal.style.display = 'none';
+        hide(modal);
         await loadPatients();
         console.log(`Paziente ID ${res.patientId} creato, Gantt ID: ${res.ganttId}`);
       } else {
-        // Gestione VINCOLO UNIQUE sul campo identificativo
         const msg = (res?.error || '').toLowerCase();
         if (msg.includes('unique') || msg.includes('constraint') || msg.includes('duplic')) {
           alert('Identificativo già esistente. Scegli un altro identificativo.');
@@ -136,7 +132,7 @@ window.addEventListener('DOMContentLoaded', () => {
   const logoutBtn = document.getElementById('logoutBtn');
   if (logoutBtn) {
     logoutBtn.onclick = () => {
-      if (modal) modal.style.display = 'none';
+      hide(modal);
       localStorage.clear();
       window.location.href = 'login.html';
     };

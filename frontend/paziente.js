@@ -36,6 +36,8 @@ window.addEventListener('DOMContentLoaded', () => {
   // Helpers
   const setText = (el, v) => { if (el) el.textContent = v ?? ''; };
   const setVal  = (el, v) => { if (el) el.value = v ?? ''; };
+  const showEl  = (el) => el && el.classList.remove('hidden');
+  const hideEl  = (el) => el && el.classList.add('hidden');
 
   async function loadPaziente() {
     const p = await window.api.getPatientById(id);
@@ -60,12 +62,8 @@ window.addEventListener('DOMContentLoaded', () => {
   }
 
   // Mostra/Nascondi form edit
-  if (editBtn) {
-    editBtn.onclick = () => { if (editForm) editForm.style.display = 'block'; };
-  }
-  if (annullaEdit) {
-    annullaEdit.onclick = () => { if (editForm) editForm.style.display = 'none'; };
-  }
+  if (editBtn)  editBtn.onclick     = () => showEl(editForm);
+  if (annullaEdit) annullaEdit.onclick = () => hideEl(editForm);
 
   // Submit modifica (nuovo payload)
   if (editForm) {
@@ -91,10 +89,9 @@ window.addEventListener('DOMContentLoaded', () => {
       });
 
       if (res.success) {
-        if (editForm) editForm.style.display = 'none';
+        hideEl(editForm);
         await loadPaziente();
       } else {
-        // gestione unique ident
         const msg = (res.error || '').toLowerCase();
         if (msg.includes('unique') || msg.includes('constraint') || msg.includes('duplic')) {
           alert('Identificativo già esistente. Scegli un altro identificativo.');
@@ -105,7 +102,7 @@ window.addEventListener('DOMContentLoaded', () => {
     };
   }
 
-  // Pulsante Gantt: apri modale per start se mancante, altrimenti vai diretto
+  // Pulsante Gantt
   if (ganttBtn) {
     ganttBtn.onclick = async () => {
       try {
@@ -117,9 +114,9 @@ window.addEventListener('DOMContentLoaded', () => {
 
         if (!res.startDatetime) {
           // chiede orario di inizio
-          if (ganttModal) ganttModal.style.display = 'flex';
+          showEl(ganttModal);
+
           if (ganttSaveBtn) {
-            // (ri)associa handler ogni volta che apro il modale
             ganttSaveBtn.onclick = async () => {
               const inputVal = ganttDatetimeInput?.value;
               if (!inputVal) { alert('Inserisci una data valida'); return; }
@@ -129,14 +126,14 @@ window.addEventListener('DOMContentLoaded', () => {
                 alert('Errore nel salvataggio orario: ' + updateRes.error);
                 return;
               }
-              if (ganttModal) ganttModal.style.display = 'none';
+              hideEl(ganttModal);
               alert('Orario inserito correttamente.');
               localStorage.setItem('LastGant', id);
               window.location.href = `gantt.html?id=${id}`;
             };
           }
           if (ganttCancelBtn) {
-            ganttCancelBtn.onclick = () => { if (ganttModal) ganttModal.style.display = 'none'; };
+            ganttCancelBtn.onclick = () => hideEl(ganttModal);
           }
         } else {
           // start già presente

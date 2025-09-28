@@ -1,49 +1,42 @@
-/**********************
- * Modali base
- **********************/
+// Modali base
 function showGanttModal() {
-  // Chiudi sempre eventuale popup note prima di aprire l'orario
   const note = document.getElementById('notePopup');
-  if (note) note.style.display = 'none';
+  if (note) note.classList.add('hidden');
 
   const modal = document.getElementById('ganttModal');
-  if (modal) modal.style.display = 'flex';
+  if (modal) modal.classList.remove('hidden');
 }
 
 function hideGanttModal() {
   const modal = document.getElementById('ganttModal');
-  if (modal) modal.style.display = 'none';
+  if (modal) modal.classList.add('hidden');
 }
 
 function showModal(message) {
   const modal = document.getElementById('customModal');
   if (!modal) { alert(message); return; }
   const modalMessage = document.getElementById('modalMessage');
-  const closeButton = document.querySelector('.close-button');
+  const closeButtons = modal.querySelectorAll('.close-button');
+
   if (modalMessage) modalMessage.textContent = message;
   modal.classList.remove('hidden');
-  if (closeButton) closeButton.onclick = () => modal.classList.add('hidden');
+
+  closeButtons.forEach(btn => btn.onclick = () => modal.classList.add('hidden'));
   window.onclick = e => { if (e.target === modal) modal.classList.add('hidden'); };
 }
 
-/**********************
- * Stato globale semplice
- **********************/
+// Stato globale semplice
 let GANTT_ID = null;
-let CLOCK_CLEANUP = null;   // per fermare l’orologio live
-let LAST_START_ISO = null;  // ultimo start_datetime per rigenerare grafico
+let CLOCK_CLEANUP = null;
+let LAST_START_ISO = null;
 
-/**********************
- * Util url
- **********************/
+// Util url
 function getPatientIdFromURL() {
   const params = new URLSearchParams(window.location.search);
   return params.get('id');
 }
 
-/**********************
- * Actor per logging
- **********************/
+// Utente per logging
 function getActor() {
   return {
     identificativo: localStorage.getItem('user_identificativo') || null,
@@ -51,28 +44,27 @@ function getActor() {
   };
 }
 
-/**********************
- * Gestione NOTE task
- **********************/
+// Gestione NOTE task
 let currentTaskForNote = null;
 
 function openNotePopup(task) {
-  // Chiudi sempre la modale orario se fosse aperta
   const gmodal = document.getElementById('ganttModal');
-  if (gmodal) gmodal.style.display = 'none';
+  if (gmodal) gmodal.classList.add('hidden');
 
-  currentTaskForNote = task; // istanza (tg_id)
+  currentTaskForNote = task;
   const noteInput = document.getElementById('noteInput');
   if (noteInput) noteInput.value = task.note || '';
+
   const np = document.getElementById('notePopup');
-  if (np) np.style.display = 'flex';
+  if (np) np.classList.remove('hidden');
 }
 function closeNotePopup() {
   const np = document.getElementById('notePopup');
-  if (np) np.style.display = 'none';
+  if (np) np.classList.add('hidden');
   currentTaskForNote = null;
 }
 
+// bind bottoni nota (anche se la modale è nascosta all'avvio)
 const _saveNoteBtn = document.getElementById('saveNoteBtn');
 if (_saveNoteBtn) {
   _saveNoteBtn.addEventListener('click', () => {
@@ -90,16 +82,15 @@ if (_saveNoteBtn) {
       });
   });
 }
+const _closeNoteBtn = document.getElementById('closeNoteBtn');
+if (_closeNoteBtn) _closeNoteBtn.addEventListener('click', closeNotePopup);
 
-/**********************
- * Bootstrap pagina
- **********************/
 window.addEventListener('DOMContentLoaded', async () => {
-  // 🔒 Chiudi forzatamente tutte le modali/overlay all'avvio
-  ['#ganttModal', '#notePopup', '.overlay', '.modal'].forEach(sel => {
+  // Chiudi forzatamente tutte le modali/overlay all'avvio
+  ['#ganttModal', '#notePopup', '#customModal', '.overlay', '.modal'].forEach(sel => {
     document.querySelectorAll(sel).forEach(el => {
-      el.style.display = 'none';
-      el.classList?.remove('show');
+      el.classList?.add('hidden');
+      el.style.display = ''; // lascio la gestione al CSS (.hidden)
     });
   });
 
@@ -107,14 +98,12 @@ window.addEventListener('DOMContentLoaded', async () => {
   if (!patientId) { alert('ID paziente non trovato'); return; }
 
   // Pulsanti top bar
-  const reenterBtn         = document.getElementById('reenterTimeBtn');
-  const backBtn            = document.getElementById('backBtn');
-  const logoutBtn          = document.getElementById('logoutBtn');
+  const reenterBtn = document.getElementById('reenterTimeBtn');
+  const backBtn    = document.getElementById('backBtn');
+  const logoutBtn  = document.getElementById('logoutBtn');
 
-  // Nascondo "Rinserisci orario" inizialmente (stile via JS, CSS rimane il tuo)
   if (reenterBtn) reenterBtn.style.display = 'none';
 
-  // Logout come nelle altre pagine
   if (logoutBtn) {
     logoutBtn.addEventListener('click', () => {
       localStorage.clear();
@@ -123,7 +112,7 @@ window.addEventListener('DOMContentLoaded', async () => {
   }
   if (backBtn) backBtn.onclick = () => { window.location.href = 'pazienti.html'; };
 
-  // Mostra identificativo donatore nella top bar
+  // Mostra identificativo donatore
   try {
     const p = await window.api.getPatientById(patientId);
     const el = document.getElementById('patientIdent');
@@ -147,7 +136,7 @@ window.addEventListener('DOMContentLoaded', async () => {
       showGanttModal();
     } else {
       generateGanttFromDatetime(ganttData.startDatetime);
-      if (reenterBtn) reenterBtn.style.display = 'inline-block';
+      if (reenterBtn) reenterBtn.style.display = 'inline-flex';
     }
 
     if (reenterBtn) {
@@ -166,22 +155,21 @@ window.addEventListener('DOMContentLoaded', async () => {
         const updateRes = await window.api.setGanttStart({
           ganttId: GANTT_ID,
           startDatetime: inputVal,
-          actor: getActor() // il backend può ignorarlo per i log dello start, se non richiesti
+          actor: getActor()
         });
 
         if (updateRes.success) {
           GANTT_ID = updateRes.ganttId || GANTT_ID;
           LAST_START_ISO = inputVal;
 
-          // Chiudi entrambe per robustezza
           hideGanttModal();
           closeNotePopup();
 
-          alert('Orario inserito correttamente.');
+          showModal('Orario inserito correttamente.');
           generateGanttFromDatetime(inputVal);
-          if (reenterBtn) reenterBtn.style.display = 'inline-block';
+          if (reenterBtn) reenterBtn.style.display = 'inline-flex';
         } else {
-          alert('Errore nel salvataggio orario: ' + updateRes.error);
+          showModal('Errore nel salvataggio orario: ' + updateRes.error);
         }
       };
     }
@@ -190,24 +178,21 @@ window.addEventListener('DOMContentLoaded', async () => {
       ganttCancelBtn.onclick = () => {
         hideGanttModal();
         closeNotePopup();
-        if (LAST_START_ISO && reenterBtn) reenterBtn.style.display = 'inline-block';
+        if (LAST_START_ISO && reenterBtn) reenterBtn.style.display = 'inline-flex';
       };
     }
 
   } catch (err) {
-    alert('Errore imprevisto: ' + err.message);
+    showModal('Errore imprevisto: ' + err.message);
   }
 });
 
-/**********************
- * Generazione Gantt
- **********************/
+// Generazione Gantt — (resto del file invariato)
 function generateGanttFromDatetime(startDatetime) {
   LAST_START_ISO = startDatetime;
   const date = new Date(startDatetime);
   renderGantt(date);
 }
-
 function generateGanttFromInput(inputHour) {
   const container = document.getElementById('container');
   if (container) container.innerHTML = "";
@@ -217,9 +202,9 @@ function generateGanttFromInput(inputHour) {
   renderGantt(startTime);
 }
 
-/**********************
- * Parsing dipendenze
- **********************/
+
+//Parsing dipendenze
+
 function parseDependencies(text) {
   if (!text) return [];
   try {
@@ -230,9 +215,7 @@ function parseDependencies(text) {
   }
 }
 
-/**********************
- * Context & rendering
- **********************/
+//Context & rendering
 function createGanttContext(startTime) {
   const taskHeight   = 50;
   const taskPadding  = 15;
@@ -285,7 +268,7 @@ function drawLegend(ctx) {
   legendGroup.append('rect').attr('x',0).attr('y',-22).attr('width',300).attr('height',185).attr('rx',10).attr('fill','white');
 
   const items = [
-    { color:'rgb(1, 1, 2)', label:'Non iniziato' },
+    { color:'rgb(75, 73, 227)', label:'Non iniziato' },
     { color:'rgb(233, 238, 160)',  label:'Richiesto' },
     { color:'rgb(255, 197, 72)',   label:'Iniziato' },
     { color:'rgb(160, 248, 175)',  label:'Terminato o non Richiesto' },
@@ -302,7 +285,7 @@ function drawLegend(ctx) {
       legendGroup.append('text').attr('x',10).attr('y',y+12).attr('fill','black').attr('font-size','17px').text(`${item.symbol} ${item.label}`);
     }
   });
-  legendGroup.append('text').attr('x',10).attr('y',3).attr('fill','black').attr('font-weight','bold').attr('font-size','19px').text('Leggenda Task:');
+  legendGroup.append('text').attr('x',10).attr('y',3).attr('fill','black').attr('font-weight','bold').attr('font-size','19px').text('Legenda Task:');
 }
 
 function drawBackgroundBandsAndDayLabels(ctx) {
@@ -382,9 +365,9 @@ function drawCurrentTimeTicker(ctx) {
   return () => clearInterval(id);
 }
 
-/**********************
- * Scheduling (basato su template `task_id`)
- **********************/
+
+//Scheduling (basato su template `task_id`)
+
 function scheduleTasksFromTemplates(instances, startTime) {
   const sched = instances.map(t => ({
     schedId: t.task_id,
@@ -432,9 +415,8 @@ function scheduleTasksFromTemplates(instances, startTime) {
   return instances;
 }
 
-/**********************
- * Fetch & Draw tasks
- **********************/
+
+
 function fetchTasksForGantt() {
   return window.api.getTasks({ ganttId: GANTT_ID }).then(resp => {
     if (!resp.success) throw new Error(resp.error || 'Errore getTasks');
@@ -461,7 +443,7 @@ function drawTasks(ctx, data) {
   data.forEach((d, i) => d.y = 140 + i * (ctx.taskHeight + ctx.taskPadding));
 
   const statusColors = {
-    non_iniziato: 'rgba(75, 73, 227, 1)',
+    non_iniziato: 'rgb(75, 73, 227)',
     richiesto:    'rgb(233, 238, 160)',
     iniziato:     'rgb(255, 197, 72)',
     terminato:    'rgb(160, 248, 175)'
@@ -506,7 +488,7 @@ function drawTasks(ctx, data) {
     // ✎ Icona matita se esiste una nota (cliccabile per aprire il popup)
     const hasNote = !!(d.note && String(d.note).trim().length > 0);
     if (hasNote) {
-      const iconX = (barW > 22) ? (barX + barW - 16) : (barX + 6);
+      const iconX = (barW > 22) ? (barX + barW - 24) : (barX + 6);
       const iconY = barY + barH / 2;
       g.append('text')
         .attr('x', iconX)
@@ -632,9 +614,8 @@ function drawTasks(ctx, data) {
   });
 }
 
-/**********************
- * Update stato (istanza tgId) — con actor per logging
- **********************/
+
+//Update stato (istanza tgId) — con actor per logging
 function updateTaskStatus(tgId, status, extra = {}) {
   const payload = { tgId, status, actor: getActor(), ...extra };
   return window.api.updateTask(payload).then(res => {
@@ -642,9 +623,9 @@ function updateTaskStatus(tgId, status, extra = {}) {
   });
 }
 
-/**********************
- * Orchestratore
- **********************/
+
+//Orchestratore
+
 function renderGantt(startTime) {
   // cleanup orologio precedente
   if (CLOCK_CLEANUP) { try { CLOCK_CLEANUP(); } catch {} finally { CLOCK_CLEANUP = null; } }

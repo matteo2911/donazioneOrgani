@@ -130,7 +130,7 @@ window.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // Logout (se presente su questa pagina)
+  // Logout 
   const logoutBtn = document.getElementById('logoutBtn');
   if (logoutBtn) {
     logoutBtn.addEventListener('click', () => {

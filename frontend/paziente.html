@@ -5,75 +5,17 @@
   <title>Dettaglio Paziente</title>
   <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet" />
   <link rel="stylesheet" href="style.css" />
-  <style>
-    body { font-family: 'Roboto', Arial, sans-serif; background: #f6f6f6; margin:0; }
-    .container { max-width: 500px; margin: 40px auto; background: #fff; border-radius: 10px; box-shadow: 0 2px 10px #0001; padding: 32px; }
-    .actions { display: flex; gap: 12px; margin-top: 24px; }
-    .actions button { flex: 1; padding: 10px; border-radius: 6px; border: none; font-weight: bold; cursor: pointer; }
-    .edit-form { margin-top: 20px; }
-    .edit-form input { width: 100%; margin-bottom: 12px; padding: 8px; border-radius: 4px; border: 1px solid #ccc; }
-
-    /* Modale gantt */
-    #ganttModal {
-      display: none;
-      position: fixed; 
-      top: 0; left: 0; 
-      width: 100vw; 
-      height: 100vh; 
-      background: rgba(0,0,0,0.5); 
-      justify-content: center; 
-      align-items: center;
-      z-index: 10000;
-    }
-    #ganttModal > div {
-      background: #fff; 
-      padding: 20px; 
-      border-radius: 8px; 
-      width: 300px; 
-      text-align: center;
-    }
-    #ganttModal input {
-      width: 100%; 
-      padding: 6px; 
-      margin-top: 12px;
-    }
-    #ganttModal button {
-      padding: 8px 16px; 
-      border: none; 
-      border-radius: 5px; 
-      cursor: pointer;
-    }
-    #ganttSaveBtn { background: #4F46E5; color: #fff; }
-    #ganttCancelBtn { background: #6c757d; color: #fff; margin-left: 10px; }
-
-    nav {
-      width: 100%;
-      padding: 12px 0;
-      background: #fff;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-      margin-bottom: 20px;
-    }
-    nav > div { margin-left: 32px; }
-    #logoutBtn {
-      background: #e53935;
-      color: #fff;
-      border: none;
-      padding: 8px 18px;
-      border-radius: 5px;
-      font-weight: bold;
-      cursor: pointer;
-    }
-  </style>
 </head>
 <body>
-  <nav>
-    <div>
-      <button id="logoutBtn">Logout</button>
-    </div>
+  <!-- Topbar -->
+  <nav class="do-topbar">
+    <div class="do-topbar__left">Donatore: <strong id="pazienteNome">Paziente</strong></div>
+    <button id="logoutBtn" class="btn btn--danger">Logout</button>
   </nav>
 
-  <div class="container">
-    <h2 id="pazienteNome"></h2>
+  <!-- Card contenuto -->
+  <div class="card card--md centered">
+    <h2>Dettaglio Paziente</h2>
 
     <div id="infoPaziente">
       <p><strong>Identificativo:</strong> <span id="infoIdentificativo"></span></p>
@@ -82,31 +24,41 @@
       <p><strong>Altre info opzionali:</strong> <span id="infoAltro"></span></p>
     </div>
 
-    <div class="actions">
-      <button id="editBtn" style="background:#4F46E5; color:#fff;">Modifica</button>
-      <button id="ganttBtn" style="background:#007BFF; color:#fff;">Vai al Gantt</button>
-      <button id="Indietro" style="background:#6c757d; color:#fff;">Indietro</button>
+    <div class="actions" style="margin-bottom: 12px;">
+      <button id="editBtn" class="btn btn--primary">Modifica</button>
+      <button id="ganttBtn" class="btn btn--primary">Vai al Gantt</button>
+      <button id="Indietro" class="btn btn--secondary">Indietro</button>
     </div>
 
-    <!-- Form modifica (solo identificativo + campi opzionali del nuovo schema) -->
-    <form id="editForm" class="edit-form" style="display:none;">
-      <input type="text" id="editIdentificativo" placeholder="Identificativo paziente" required />
-      <input type="text" id="editOspedale" placeholder="Ospedale di provenienza" />
-      <input type="text" id="editSesso" placeholder="Sesso (es. M/F/Altro)" />
-      <input type="text" id="editAltreInfo" placeholder="Altre info opzionali" />
-      <button type="submit" style="background:#4F46E5; color:#fff;">Salva Modifiche</button>
-      <button type="button" id="annullaEdit" style="background:#6c757d; color:#fff;">Annulla</button>
+    <!-- Form modifica -->
+    <form id="editForm" class="form hidden">
+      <div class="row">
+        <input type="text" id="editIdentificativo" placeholder="Identificativo paziente" required />
+      </div>
+      <div class="row">
+        <input type="text" id="editOspedale" placeholder="Ospedale di provenienza" />
+      </div>
+      <div class="row">
+        <input type="text" id="editSesso" placeholder="Sesso (es. M/F/Altro)" />
+      </div>
+      <div class="row">
+        <input type="text" id="editAltreInfo" placeholder="Altre info opzionali" />
+      </div>
+      <div class="actions">
+        <button type="submit" class="btn btn--primary">Salva Modifiche</button>
+        <button type="button" id="annullaEdit" class="btn btn--secondary">Annulla</button>
+      </div>
     </form>
   </div>
 
   <!-- Modale per inserire orario Gantt -->
-  <div id="ganttModal">
-    <div>
-      <h3>Inserisci orario inizio Gantt</h3>
+  <div id="ganttModal" class="modal hidden">
+    <div class="modal__content">
+      <h3 class="modal__title">Inserisci orario inizio Gantt</h3>
       <input type="datetime-local" id="ganttDatetimeInput" />
-      <div style="margin-top: 20px;">
-        <button id="ganttSaveBtn">Salva</button>
-        <button id="ganttCancelBtn">Annulla</button>
+      <div class="modal__actions">
+        <button id="ganttCancelBtn" class="btn btn--secondary">Annulla</button>
+        <button id="ganttSaveBtn" class="btn btn--primary">Salva</button>
       </div>
     </div>
   </div>
