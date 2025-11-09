@@ -32,7 +32,7 @@ contextBridge.exposeInMainWorld('api', {
   setGanttStart: ({ ganttId, startDatetime, actor = null }) =>
     ipcRenderer.invoke('set-gantt-start', { ganttId, startDatetime }),
 
-  // Alias comodo usato dal frontend: prende i task di un Gantt
+  // Alias usato dal frontend: prende i task di un Gantt
   getTasks: ({ ganttId }) =>
     ipcRenderer.invoke('get-gantt-tasks', { ganttId }),
 

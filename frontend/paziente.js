@@ -8,7 +8,15 @@ window.addEventListener('DOMContentLoaded', () => {
     return;
   }
 
-  // Elementi info paziente (nuovo schema)
+function getActor() {
+  return {
+    identificativo: localStorage.getItem('user_identificativo') || null,
+    role: (localStorage.getItem('role') || 'medico').toLowerCase(),
+  };
+}
+
+
+  // Elementi info paziente 
   const infoIdentificativo        = document.getElementById('infoIdentificativo');
   const infoCausaDecesso          = document.getElementById('infoCausaDecesso');
   const infoOspedale              = document.getElementById('infoOspedale');
@@ -29,7 +37,7 @@ window.addEventListener('DOMContentLoaded', () => {
   const editForm    = document.getElementById('editForm');
   const annullaEdit = document.getElementById('annullaEdit');
 
-  // Input form modifica (nuovo schema)
+  // Input form modifica 
   const editIdentificativo          = document.getElementById('editIdentificativo');
   const editCausaDecesso            = document.getElementById('editCausaDecesso');
   const editOspedale                = document.getElementById('editOspedale');
@@ -63,7 +71,7 @@ window.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
-    // Titolo e campi (anonimi)
+    // Titolo e campi 
     setText(pazienteNome,             p.identificativo || '');
     setText(infoIdentificativo,       p.identificativo || '');
     setText(infoCausaDecesso,         p.causa_decesso || '');
@@ -84,12 +92,12 @@ window.addEventListener('DOMContentLoaded', () => {
     setVal(editOspedale,              p.ospedale_provenienza || '');
     setVal(editDataInizioRicovero,    p.data_inizio_ricovero  ||  "");
     setVal(editSesso,                 p.sesso || '');
-    setVal(infoEta,                   p.eta || '');
-    setVal(infoGruppoSanguigno,       p.gruppo_sanguigno || '');
-    setVal(infoPeso,                  p.peso | '');
-    setVal(infoAltezza,               p.altezza || '');
-    setVal(infoLuogoNascita,          p.luogo_nascita || '');
-    setVal(infoLuogoResidenza,        p.luogo_residenza || ''); 
+    setVal(editEta,                   p.eta || '');
+    setVal(editGruppoSanguigno,       p.gruppo_sanguigno || '');
+    setVal(editPeso,                  p.peso || '');
+    setVal(editAltezza,               p.altezza || '');
+    setVal(editLuogoNascita,          p.luogo_nascita || '');
+    setVal(editLuogoResidenza,        p.luogo_residenza || ''); 
     setVal(editAltreInfo,             p.altre_info || '');
   }
 
@@ -97,7 +105,7 @@ window.addEventListener('DOMContentLoaded', () => {
   if (editBtn)  editBtn.onclick     = () => showEl(editForm);
   if (annullaEdit) annullaEdit.onclick = () => hideEl(editForm);
 
-  // Submit modifica (nuovo payload)
+  // Submit modifica 
   if (editForm) {
     editForm.onsubmit = async (e) => {
       e.preventDefault();
@@ -133,7 +141,8 @@ window.addEventListener('DOMContentLoaded', () => {
         altezza,
         luogo_nascita,
         luogo_residenza,
-        altre_info
+        altre_info,
+        actor: getActor()
       });
 
       if (res.success) {

@@ -570,7 +570,7 @@ function drawTasks(ctx, data) {
 
         if (d.status === 'terminato') {
           d.status = 'iniziato';
-          updateTaskStatus(d.id, 'iniziato', { endDatetime: null }); // opzionale: pulizia end
+          updateTaskStatus(d.id, 'iniziato', { endDatetime: null }); 
         } else if (d.status === 'iniziato') {
           d.status = 'richiesto';
           updateTaskStatus(d.id, 'richiesto', { startDatetime: null });

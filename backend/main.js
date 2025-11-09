@@ -1,4 +1,4 @@
-// main.js (schema anonimo aggiornato ai nuovi campi paziente + logging naturale con donatore)
+
 const { app, BrowserWindow, ipcMain } = require('electron');
 const path = require('path');
 const fs = require('fs');
@@ -127,6 +127,7 @@ app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') app.quit();
 });
 
+
 /* ===========================
    ======  IPC HANDLERS  =====
    =========================== */
@@ -230,7 +231,8 @@ ipcMain.handle('update-patient', (_ev, {
   altezza=null,
   luogo_nascita=null,
   luogo_residenza=null,
-  altre_info = null
+  altre_info = null,
+  actor = null
 }) => {
   try {
     const info = db.prepare(`
@@ -239,12 +241,12 @@ ipcMain.handle('update-patient', (_ev, {
       WHERE id = ?
     `).run((identificativo || '').trim(), causa_decesso, ospedale_provenienza,data_inizio_ricovero, sesso, eta, gruppo_sanguigno, peso, altezza, luogo_nascita, luogo_residenza ,altre_info, id);
 
-    // Log (opzionale): registra aggiornamento anagrafica donatore
+
     if (info.changes > 0) {
       const ident = (identificativo || '').trim() || getPatientIdentById(id);
       logAction({
-        utente_identificativo: null,
-        ruolo: null,
+        utente_identificativo: actor?.identificativo || null,
+        ruolo: actor?.role || null,
         azione: `Aggiornati dati donatore`,
         riferimento_id: ident || null
       });
@@ -303,7 +305,7 @@ ipcMain.handle('check-gantt-start', (_ev, patientId) => {
   }
 });
 
-/** Imposta start datetime del gantt (NO LOG richiesto) */
+/** Imposta start datetime del gantt */
 ipcMain.handle('set-gantt-start', (_ev, { ganttId, startDatetime }) => {
   try {
     const stmt = db.prepare(`UPDATE gantts SET start_datetime = ? WHERE id = ?`);
@@ -348,7 +350,7 @@ ipcMain.handle('get-gantt-tasks', (_ev, { ganttId }) => {
   }
 });
 
-/** Variante: tasks a partire dal patientId */
+
 ipcMain.handle('get-tasks-by-patient', (_ev, patientId) => {
   try {
     const g = db.prepare(`SELECT id FROM gantts WHERE patient_id = ?`).get(patientId);
@@ -423,7 +425,7 @@ ipcMain.handle('update-task', (_ev, payload) => {
           utente_identificativo: who,
           ruolo,
           azione,
-          riferimento_id: donatoreIdent || null   // <— qui salvi l'IDENTIFICATIVO del donatore
+          riferimento_id: donatoreIdent || null   // <— Identificativo del donatore
         });
       }
     }
@@ -435,7 +437,7 @@ ipcMain.handle('update-task', (_ev, payload) => {
   }
 });
 
-/** Solo template tasks globali (opzionale) */
+/** Solo template tasks globali */
 ipcMain.handle('get-tasks-templates', () => {
   try {
     const rows = db.prepare('SELECT * FROM tasks ORDER BY CAST(id AS INTEGER)').all();
