@@ -22,8 +22,16 @@ function createTables(db) {
     CREATE TABLE IF NOT EXISTS patients (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       identificativo TEXT UNIQUE NOT NULL,
+      causa_decesso TEXT,
       ospedale_provenienza TEXT,
+      data_inizio_ricovero TEXT,
       sesso TEXT,
+      eta TEXT,
+      gruppo_sanguigno TEXT,
+      peso TEXT,
+      altezza TEXT,
+      luogo_nascita TEXT,
+      luogo_residenza TEXT,
       altre_info TEXT
     );
 

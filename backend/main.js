@@ -220,16 +220,24 @@ ipcMain.handle('get-patient-by-id', (_ev, id) => {
 ipcMain.handle('update-patient', (_ev, {
   id,
   identificativo,
+  causa_decesso = null,
   ospedale_provenienza = null,
+  data_inizio_ricovero = null,
   sesso = null,
+  eta = null,
+  gruppo_sanguigno= null,
+  peso= null,
+  altezza=null,
+  luogo_nascita=null,
+  luogo_residenza=null,
   altre_info = null
 }) => {
   try {
     const info = db.prepare(`
       UPDATE patients
-      SET identificativo = ?, ospedale_provenienza = ?, sesso = ?, altre_info = ?
+      SET identificativo = ?, causa_decesso = ?, ospedale_provenienza = ?, data_inizio_ricovero = ?, sesso = ?, eta = ?, gruppo_sanguigno = ?, peso = ?, altezza = ?, luogo_nascita = ?, luogo_residenza = ?,   altre_info = ?
       WHERE id = ?
-    `).run((identificativo || '').trim(), ospedale_provenienza, sesso, altre_info, id);
+    `).run((identificativo || '').trim(), causa_decesso, ospedale_provenienza,data_inizio_ricovero, sesso, eta, gruppo_sanguigno, peso, altezza, luogo_nascita, luogo_residenza ,altre_info, id);
 
     // Log (opzionale): registra aggiornamento anagrafica donatore
     if (info.changes > 0) {
