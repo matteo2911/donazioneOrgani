@@ -11,11 +11,13 @@ window.addEventListener('DOMContentLoaded', async () => {
   const refreshBtn = document.getElementById('refreshBtn');
   const backBtn = document.getElementById('backBtn');
   const logoutBtn = document.getElementById('logoutBtn');
+  const clearLogsBtn = document.getElementById('clearLogsBtn');
 
   backBtn.onclick = () => window.location.href = 'pazienti.html';
   logoutBtn.onclick = () => {
     localStorage.clear();
     window.location.href = 'login.html';
+
   };
 
   function escapeHTML(s) {
@@ -58,4 +60,23 @@ window.addEventListener('DOMContentLoaded', async () => {
 
   refreshBtn.onclick = loadLogs;
   await loadLogs();
+
+
+  clearLogsBtn.onclick = async () => {
+    const ok = confirm('Vuoi eliminare TUTTI i log dal database?\n\nOperazione irreversibile.');
+    if (!ok) return;
+
+    try {
+      const res = await window.api.clearLogs();
+      if (!res?.success) throw new Error(res?.error || 'Errore clearLogs');
+
+      await loadLogs();
+      alert('Log eliminati con successo.');
+    } catch (e) {
+      console.error('[logs] clearLogs error:', e);
+      alert("Errore durante l'eliminazione dei log.");
+    }
+  };
+
+
 });

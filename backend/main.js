@@ -516,3 +516,22 @@ ipcMain.handle('get-logs', (_ev, filters = {}) => {
     return { success: false, error: e.message };
   }
 });
+
+/** Elimina TUTTI i log (solo manutenzione) */
+ipcMain.handle('clear-logs', () => {
+  try {
+    const info = db.prepare('DELETE FROM logs').run();
+
+    // reset del contatore AUTOINCREMENT (se presente)
+    try {
+      db.prepare("DELETE FROM sqlite_sequence WHERE name='logs'").run();
+    } catch (_) {
+      // ignore
+    }
+
+    return { success: true, changes: info.changes };
+  } catch (e) {
+    console.error('clear-logs error:', e);
+    return { success: false, error: e.message };
+  }
+});

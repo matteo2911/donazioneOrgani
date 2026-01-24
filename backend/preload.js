@@ -1,11 +1,11 @@
 // preload.js
-const { contextBridge, ipcRenderer } = require('electron');
+const { contextBridge, ipcRenderer, webFrame } = require('electron');
 
 contextBridge.exposeInMainWorld('api', {
   /* --- Login --- */
-  login: (payload /* { identificativo, password? } */) =>
+  login: (payload) =>
     ipcRenderer.invoke('login', payload),
-
+  
   /* --- Pazienti --- */
   getPatients: () =>
     ipcRenderer.invoke('get-patients'),
@@ -16,7 +16,7 @@ contextBridge.exposeInMainWorld('api', {
   createPatientAndGantt: ({ identificativo }) =>
     ipcRenderer.invoke('create-patient-and-gantt', { identificativo }),
 
-  updatePatient: (payload /* { id, identificativo, ospedale_provenienza, sesso, altre_info } */) =>
+  updatePatient: (payload ) =>
     ipcRenderer.invoke('update-patient', payload),
 
   deletePatient: ({ patientId, adminIdentificativo = null }) =>
@@ -39,17 +39,46 @@ contextBridge.exposeInMainWorld('api', {
   getTasksByPatient: (patientId) =>
     ipcRenderer.invoke('get-tasks-by-patient', patientId),
 
-  updateTask: (payload /* { tgId, status?, note?, startDatetime?, endDatetime?, actor? } */) =>
+  updateTask: (payload ) =>
     ipcRenderer.invoke('update-task', payload),
 
   getTasksTemplates: () =>
     ipcRenderer.invoke('get-tasks-templates'),
 
   /* --- Logs (solo admin in UI) --- */
-  getLogs: (filters /* { role?, user?, since?, until?, limit? } */) =>
+  getLogs: (filters) =>
     ipcRenderer.invoke('get-logs', filters),
+
+  clearLogs: () =>
+  ipcRenderer.invoke('clear-logs'),
 
   /* --- Manutenzione --- */
   resetDatabase: () =>
-    ipcRenderer.invoke('reset-database'),
+    ipcRenderer.invoke('reset-database'),  
+});
+
+
+// =========================
+// Zoom con CTRL/CMD + rotellina (globale su tutte le pagine)
+// =========================
+const clamp = (v, min, max) => Math.min(max, Math.max(min, v));
+
+window.addEventListener('wheel', (event) => {
+  const zoomModifier = event.ctrlKey || event.metaKey; // Ctrl (Win/Linux) o Cmd (Mac)
+  if (!zoomModifier) return;
+
+  event.preventDefault();
+
+  const step = 0.10;
+  const current = webFrame.getZoomFactor();
+  const next = event.deltaY < 0 ? current + step : current - step;
+
+  webFrame.setZoomFactor(clamp(next, 0.25, 3));
+}, { passive: false });
+
+// reset veloce
+window.addEventListener('keydown', (event) => {
+  const zoomModifier = event.ctrlKey || event.metaKey;
+  if (!zoomModifier) return;
+  if (event.key === '0') webFrame.setZoomFactor(1);
 });
