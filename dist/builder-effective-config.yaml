@@ -9,8 +9,6 @@ files:
       - frontend/**/*
       - '!backend/tasks.db'
 extraResources:
-  - from: backend/tasks.db
-    to: tasks.db
   - from: backend/data/
     to: data
     filter:

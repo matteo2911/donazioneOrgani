@@ -30,7 +30,7 @@ contextBridge.exposeInMainWorld('api', {
     ipcRenderer.invoke('check-gantt-start', patientId),
 
   setGanttStart: ({ ganttId, startDatetime, actor = null }) =>
-    ipcRenderer.invoke('set-gantt-start', { ganttId, startDatetime }),
+    ipcRenderer.invoke('set-gantt-start', { ganttId, startDatetime, actor }),
 
   // Alias usato dal frontend: prende i task di un Gantt
   getTasks: ({ ganttId }) =>

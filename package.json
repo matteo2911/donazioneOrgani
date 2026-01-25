@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Gantt Chart per la gestione dei trapianti degli organi per l'ospedale San Camillo",
   "main": "backend/main.js",
-  "author": "Emilia Russo",
+  "author": "Matteo Romeo",
   "license": "Apache-2.0",
   "scripts": {
     "start": "electron .",
@@ -31,10 +31,6 @@
       "!backend/tasks.db"
     ],
     "extraResources": [
-      {
-        "from": "backend/tasks.db",
-        "to": "tasks.db"
-      },
       {
         "from": "backend/data/",
         "to": "data",

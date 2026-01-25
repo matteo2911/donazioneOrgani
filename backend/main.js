@@ -4,6 +4,7 @@ const path = require('path');
 const fs = require('fs');
 const Database = require('better-sqlite3');
 const { createTables } = require('./dataBase');
+app.setName('GestioneTrapiantiOrgani');
 
 let db;
 
@@ -61,8 +62,16 @@ function getPatientIdentById(patientId) {
 /* -----------------------------
    DB Init
 ------------------------------*/
+function getDbPath() {
+  return path.join(app.getPath('userData'), 'database.db');
+}
+
 function initDatabase() {
-  const dbPath = path.join(__dirname, 'database.db');
+  const dbPath = getDbPath();
+
+  // crea la cartella se non esiste
+  fs.mkdirSync(path.dirname(dbPath), { recursive: true });
+
   db = new Database(dbPath);
   db.pragma('foreign_keys = ON');
 
@@ -77,11 +86,13 @@ function initDatabase() {
       console.error('File data.json non trovato in:', dataPath);
       return;
     }
+
     const tasksData = JSON.parse(fs.readFileSync(dataPath, 'utf-8'));
     const insert = db.prepare(`
       INSERT INTO tasks (id, name, duration, description, dependencies)
       VALUES (?, ?, ?, ?, ?)
     `);
+
     const tx = db.transaction(rows => {
       rows.forEach(t => insert.run(
         t.id,
@@ -91,13 +102,13 @@ function initDatabase() {
         JSON.stringify(t.dependencies || [])
       ));
     });
+
     tx(tasksData);
     console.log(`Inizializzazione: inseriti ${tasksData.length} task template.`);
   } else {
     console.log('Tabella tasks già popolata.');
   }
 }
-
 /* -----------------------------
    Window
 ------------------------------*/
