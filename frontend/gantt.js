@@ -55,6 +55,10 @@ function openNotePopup(task) {
   const noteInput = document.getElementById('noteInput');
   if (noteInput) noteInput.value = task.note || '';
 
+  // titolo: Nota per "nome task"
+  const noteTitle = document.querySelector('#notePopup .modal__title');
+  if (noteTitle) noteTitle.textContent = `Nota per "${(task && task.name) ? task.name : 'task'}"`;
+
   const np = document.getElementById('notePopup');
   if (np) np.classList.remove('hidden');
 }
@@ -470,7 +474,6 @@ function drawTasks(ctx, data) {
      .attr('width',  barW)
      .attr('height', barH)
      .attr('fill', statusColors[d.status] || '#ccc')
-     .attr('stroke', '#000')
      .on('click', () => openNotePopup(d))
      .on('mouseover', (event) => {
         const depsNames = (d.dependencies && d.dependencies.length)
